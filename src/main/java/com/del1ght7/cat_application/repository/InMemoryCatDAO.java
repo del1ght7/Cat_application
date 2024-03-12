@@ -33,7 +33,7 @@ public class InMemoryCatDAO {
         }
         return null;
     }
-    public void deleteCat(Cat Cat) {
-        catList.remove(Cat);
+    public void deleteCat(Cat cat) {
+        catList.remove(cat);
     }
 }

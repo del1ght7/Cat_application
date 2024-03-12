@@ -1,4 +1,4 @@
-package com.del1ght7.cat_application.Service;
+package com.del1ght7.cat_application.service;
 
 import com.del1ght7.cat_application.model.Cat;
 import org.springframework.stereotype.Service;

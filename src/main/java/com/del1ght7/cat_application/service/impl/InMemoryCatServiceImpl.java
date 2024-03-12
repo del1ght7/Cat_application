@@ -1,8 +1,8 @@
-package com.del1ght7.cat_application.Service.impl;
+package com.del1ght7.cat_application.service.impl;
 
 import com.del1ght7.cat_application.model.Cat;
 import com.del1ght7.cat_application.repository.InMemoryCatDAO;
-import com.del1ght7.cat_application.Service.CatService;
+import com.del1ght7.cat_application.service.CatService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

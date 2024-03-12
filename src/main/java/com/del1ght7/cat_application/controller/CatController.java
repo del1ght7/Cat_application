@@ -1,7 +1,7 @@
 package com.del1ght7.cat_application.controller;
 
 import com.del1ght7.cat_application.model.Cat;
-import com.del1ght7.cat_application.Service.CatService;
+import com.del1ght7.cat_application.service.CatService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
