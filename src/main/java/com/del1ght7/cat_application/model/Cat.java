@@ -1,14 +1,22 @@
 package com.del1ght7.cat_application.model;
 
-import lombok.Builder;
-import lombok.Data;
+import jakarta.persistence.*;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
 @Builder
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "cats")
 public class Cat {
-    private String breed;
-    private String country;
-    private String origin;
-    private String coat;
-    private String pattern;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String name;
+    private Integer age;
+    @ManyToOne
+    @JoinColumn(name = "breed")
+    private Breed breed;
 }

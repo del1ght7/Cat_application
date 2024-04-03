@@ -9,8 +9,7 @@ import java.util.List;
 public interface CatService {
     Cat postCat(Cat cat);
     List<Cat> getAllCats();
-    Cat getRandomCat();
-    Cat updateCatByCountry(Cat cat);
+    Cat updateCat(Cat cat);
     void deleteCat(Cat cat);
 
 }
