@@ -22,12 +22,16 @@ public class BreedController {
     public List<Breed> getAllBreeds() {
         return service.getAllBreed();
     }
+    @GetMapping("/breedsage")
+    public List<Breed> getBreedsByCatAgeGreaterThan(@RequestParam int age) {
+        return service.getBreedsByCatAgeGreaterThan(age);
+    }
     @PutMapping()
     public Breed updateBreed(@RequestBody Breed breed) {
         return service.updateBreed(breed);
     }
-    @DeleteMapping()
-    public void deleteBreed(@RequestBody Breed breed) {
-        service.deleteBreed(breed);
+    @DeleteMapping("{id}")
+    public void deleteBreed(@PathVariable Long id) {
+        service.deleteBreed(id);
     }
 }
