@@ -22,6 +22,11 @@ public class Breed {
     private String origin;
     private String coat;
     private String pattern;
+    @Setter
+    @Getter
+    @Column(name = "cat_age")
+    private int catAge;
+
     @JsonIgnore
     @OneToMany(mappedBy = "breed")
     private Set<Cat> cats;

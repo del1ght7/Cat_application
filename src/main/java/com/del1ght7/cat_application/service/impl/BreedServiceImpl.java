@@ -6,7 +6,7 @@ import com.del1ght7.cat_application.model.Cat;
 import com.del1ght7.cat_application.repository.BreedRepository;
 import com.del1ght7.cat_application.service.BreedService;
 import org.springframework.stereotype.Service;
-
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -21,45 +21,47 @@ public class BreedServiceImpl implements BreedService {
 
     @Override
     public List<Breed> getBreedsByCatAgeGreaterThan(int age) {
-        // Проверяем, есть ли результат в кэше
         String cacheKey = "breedsByCatAge_" + age;
-        if (cache.containsKey(cacheKey)) {
-            return (List<Breed>) cache.get(cacheKey);
+        List<Breed> breeds = (List<Breed>) cache.get(cacheKey);
+        if (breeds == null) {
+            breeds = breedRepository.findBreedsByCatAgeGreaterThan(age);
+            cache.put(cacheKey, breeds);
         }
-        // Если результат отсутствует в кэше, выполняем запрос к базе данных
-        List<Breed> breeds = breedRepository.findBreedsByCatAgeGreaterThan(age);
-        // Сохраняем результат в кэше
-        cache.put(cacheKey, breeds);
         return breeds;
     }
 
     @Override
     public Breed postBreed(Breed breed) {
-        return breedRepository.save(breed);
+        Breed savedBreed = breedRepository.save(breed);
+        cache.put("breed_" + savedBreed.getId(), savedBreed);
+        return savedBreed;
     }
 
+    @Override
+    public Breed updateBreed(Breed breed) {
+        Breed updatedBreed = breedRepository.save(breed);
+        cache.put("breed_" + updatedBreed.getId(), updatedBreed);
+        return updatedBreed;
+    }
     @Override
     public List<Breed> getAllBreed() {
         return breedRepository.findAll();
     }
 
-    @Override
-    public Breed updateBreed(Breed breed) {
-        return breedRepository.save(breed);
-    }
 
 
     @Override
     public Breed deleteBreed(Long id) {
         Breed breed = breedRepository.findBreedById(id);
-        if (breed!= null){
+        if (breed != null) {
             if (breed.getCats() != null) {
-                List<Cat> cats = breed.getCats().stream().toList();
-                for(Cat cat:cats){
+                List<Cat> cats = new ArrayList<>(breed.getCats());
+                for (Cat cat : cats) {
                     cat.setBreed(null);
                 }
             }
             breedRepository.delete(breed);
+            cache.remove("breed_" + breed.getId()); // Удаление из кэша
         }
         return null;
     }
