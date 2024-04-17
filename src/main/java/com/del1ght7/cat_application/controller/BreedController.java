@@ -1,40 +1,51 @@
 package com.del1ght7.cat_application.controller;
 
+
+import com.del1ght7.cat_application.cache.InMemoryMap;
 import com.del1ght7.cat_application.model.Breed;
 import com.del1ght7.cat_application.service.BreedService;
-import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@AllArgsConstructor
 @RequestMapping("/api/v1/breeds")
 public class BreedController {
-    private final BreedService service;
+    private final BreedService breedService;
+    private final InMemoryMap<Long, Breed> cache;
 
-    @PostMapping()
-    public Breed postBreed(@RequestBody Breed breed) {
-        return service.postBreed(breed);
+    public BreedController(BreedService breedService, InMemoryMap cache) {
+        this.breedService = breedService;
+        this.cache = cache;
     }
 
-    @GetMapping()
-    public List<Breed> getAllBreeds() {
-        return service.getAllBreed();
+    @PostMapping("/add/")
+    public ResponseEntity<Breed> postBreed(@RequestBody Breed breed) {
+        return ResponseEntity.ok(breedService.postBreed(breed));
     }
 
-    @GetMapping("/cats")
-    public List<Breed> getBreedsByCatAgeGreaterThan(@RequestParam int age) {
-        return service.getBreedsByCatAgeGreaterThan(age);
+    @GetMapping("/get/all")
+    public ResponseEntity<List<Breed>> getAllBreeds() {
+        return ResponseEntity.ok(breedService.getAllBreed());
     }
 
-    @PutMapping()
-    public Breed updateBreed(@RequestBody Breed breed) {
-        return service.updateBreed(breed);
+    @GetMapping("/get/{id}")
+    public ResponseEntity<Breed> getBreeds(@PathVariable Long id) {
+        if (cache.containsKey(id)) {
+            return ResponseEntity.ok(cache.get(id));
+        }
+        cache.put(id, breedService.getBreedById(id));
+        return ResponseEntity.ok(cache.get(id));
     }
 
-    @DeleteMapping("{id}")
-    public void deleteBreed(@PathVariable Long id) {
-        service.deleteBreed(id);
+    @PutMapping("/update/")
+    public ResponseEntity<Breed> updateBreed(@RequestBody Breed breed) {
+        return ResponseEntity.ok(breedService.updateBreed(breed));
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Long> deleteBreed(@PathVariable Long id) {
+        return ResponseEntity.ok(breedService.deleteBreed(id));
     }
 }

@@ -8,9 +8,13 @@ import java.util.List;
 
 @Service
 public interface BreedService {
-    List<Breed> getBreedsByCatAgeGreaterThan(int age);
     Breed postBreed(Breed breed);
+
     List<Breed> getAllBreed();
+
+    Breed getBreedById(Long id);
+
     Breed updateBreed(Breed breed);
-    Breed deleteBreed(Long id);
+
+    Long deleteBreed(Long id);
 }

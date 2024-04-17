@@ -6,31 +6,31 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Component
-public class InMemoryMap {
-    private final Map<String, Object> cache;
+public class InMemoryMap<K, V> {
     private static final int CAPACITY = 50;
-    public InMemoryMap() {
-        cache = new LinkedHashMap<>() {
-            @Override
-            protected boolean removeEldestEntry(Map.Entry<String, Object> eldest) {
-                return cache.size() > CAPACITY;
-            }
-        };
+    private final Map<K, V> cache  = new LinkedHashMap<>(CAPACITY, 0.75f, true) {
+        @Override
+        protected boolean removeEldestEntry(Map.Entry eldest) {
+            return size() > CAPACITY;
+        }
+    };
+    public V get(K key) {
+        return cache.get(key);
     }
-    public void put(String key, Object value) {
+
+    public void put(K key, V value) {
         cache.put(key, value);
     }
 
-    public Object get(String key) {
-        return cache.get(key);
-    }
-    public boolean containsKey(String key) {
+    public boolean containsKey(K key) {
         return cache.containsKey(key);
     }
-    public void remove(String key) {
+
+    public void evict(K key) {
         cache.remove(key);
     }
-    public int size() {
-        return cache.size();
+
+    public void clear() {
+        cache.clear();
     }
 }

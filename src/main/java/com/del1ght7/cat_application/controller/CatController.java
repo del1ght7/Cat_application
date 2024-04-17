@@ -1,30 +1,57 @@
 package com.del1ght7.cat_application.controller;
 
+import com.del1ght7.cat_application.cache.InMemoryMap;
 import com.del1ght7.cat_application.model.Cat;
 import com.del1ght7.cat_application.service.CatService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/v1/cats")
 public class CatController {
-    private final CatService service;
-    @PostMapping()
-    public Cat postCat(@RequestBody Cat cat) {
-        return service.postCat(cat);
+    private final CatService catService;
+    private final InMemoryMap<Long, Cat> singleObjCache;
+    private final InMemoryMap<Integer, List<Cat>> listObjCache;
+
+    @PostMapping("/add/")
+    public ResponseEntity<Cat> postCat(@RequestBody Cat cat) {
+        return ResponseEntity.ok(catService.postCat(cat));
     }
-    @GetMapping()
-    public List<Cat> getAllCats() {
-        return service.getAllCats();
+
+    @GetMapping("/get/all")
+    public ResponseEntity<List<Cat>> getAllСats() {
+        return ResponseEntity.ok(catService.getAllCats());
     }
-    @PutMapping()
-    public Cat updateCat(@RequestBody Cat cat) {
-        return service.updateCat(cat);
+
+    @GetMapping("/get/{id}")
+    public ResponseEntity<Cat> getAllCats(@PathVariable Long id) {
+        if (singleObjCache.containsKey(id)) {
+            return ResponseEntity.ok(singleObjCache.get(id));
+        }
+        singleObjCache.put(id, catService.getCatById(id));
+        return ResponseEntity.ok(singleObjCache.get(id));
     }
-    @DeleteMapping()
-    public void deleteCat(@RequestBody Cat cat) {
-        service.deleteCat(cat);
+
+    @PutMapping("/update/")
+    public ResponseEntity<Cat> updateCat(@RequestBody Cat cat) {
+        return ResponseEntity.ok(catService.updateCat(cat));
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Long> deleteCat(@PathVariable Long id) {
+        return ResponseEntity.ok(catService.deleteCat(id));
+    }
+
+    @GetMapping("/get/withage/{age}")
+    public ResponseEntity<List<Cat>> getAllCatsWithAge(@PathVariable int age) {
+        if (listObjCache.containsKey(age)) {
+            return ResponseEntity.ok(listObjCache.get(age));
+        }
+        listObjCache.put(age, catService.getAllCatsByAge(age));
+        return ResponseEntity.ok(listObjCache.get(age));
     }
 }
